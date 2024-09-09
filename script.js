@@ -1,7 +1,7 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
-const BALLZ = [];
+const BALLS = [];
 
 let LEFT, RIGHT, UP, DOWN;
 let friction = 0.1;
@@ -15,15 +15,12 @@ class Vector {
     add(v) {
         return new Vector(this.x+v.x, this.y+v.y);
     }
-
     subtr(v) {
         return new Vector(this.x-v.x, this.y-v.y);
     }
-
     mag() {
         return Math.sqrt(this.x**2 + this.y**2);
     }
-
     mult(n) {
         return new Vector(this.x*n, this.y*n);
     }
@@ -47,9 +44,8 @@ class Ball {
         this.acc = new Vector(0,0);
         this.acceleration = 1;
         this.player = false;
-        BALLZ.push(this);
+        BALLS.push(this);
     }
-
     drawball(){
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.r, 0, 2*Math.PI);
@@ -58,7 +54,6 @@ class Ball {
         ctx.fillStyle = this.color;
         ctx.fill();
     }
-
     display() {
         this.vel.drawVect(this.x, this.y, 10, 'green');
         this.acc.drawVect(this.x, this.y, 100, 'blue');
@@ -124,7 +119,7 @@ const keyControl = (b) => {
 
 const mainLoop = () => {
     ctx.clearRect(0,0, canvas.clientWidth, canvas.clientHeight);
-    BALLZ.forEach((b) => {
+    BALLS.forEach((b) => {
         b.drawball();
         if(b.player) {
             keyControl(b);
@@ -138,7 +133,3 @@ let Ball1 = new Ball(200,200,30,"red");
 Ball1.player = true;
 
 requestAnimationFrame(mainLoop);
-
-
-
-
