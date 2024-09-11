@@ -25,6 +25,20 @@ class Vector {
         return new Vector(this.x*n, this.y*n);
     }
 
+    // return perpendicular vector
+    normal(){
+        return new Vector(-this.y, this.x).unit();
+    }
+
+    // return a vector with same direction and 1 length
+    unit() {
+        if(this.mag() === 0) {
+            return new Vector(0,0);
+        } else {
+            return new Vector(this.x/this.mag(), this.y/this.mag());
+        }
+    }
+
     drawVect(start_x, start_y, n, color) {
         ctx.beginPath();
         ctx.moveTo(start_x, start_y);
