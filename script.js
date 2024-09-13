@@ -25,12 +25,10 @@ class Vector {
         return new Vector(this.x*n, this.y*n);
     }
 
-    // return perpendicular vector
     normal(){
         return new Vector(-this.y, this.x).unit();
     }
 
-    // return a vector with same direction and 1 length
     unit() {
         if(this.mag() === 0) {
             return new Vector(0,0);
