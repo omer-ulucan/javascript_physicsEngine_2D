@@ -37,6 +37,10 @@ class Vector {
         }
     }
 
+    static dot(v1, v2) {
+        return v1.x*v2.x + v1.y*v2.y;
+    }
+
     drawVect(start_x, start_y, n, color) {
         ctx.beginPath();
         ctx.moveTo(start_x, start_y);
@@ -67,8 +71,12 @@ class Ball {
         ctx.fill();
     }
     display() {
-        this.vel.drawVect(this.x, this.y, 10, 'green');
-        this.acc.drawVect(this.x, this.y, 100, 'blue');
+        this.vel.drawVect(550, 400, 10, 'green');
+        this.acc.unit().drawVect(550, 400, 50, 'blue');
+        ctx.beginPath();
+        ctx.arc(550, 400, 50, 0, 2*Math.PI);
+        ctx.strokeStyle = 'black';
+        ctx.stroke();
     }
 }
 
@@ -122,6 +130,7 @@ const keyControl = (b) => {
         b.acc.x = 0;
     }
     
+    b.acc = b.acc.unit().mult(b.acceleration);
     b.vel = b.vel.add(b.acc);
     b.vel = b.vel.mult(1-friction);
 
