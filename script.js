@@ -1,7 +1,7 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
-const BALLS = [];
+const BALLZ = [];
 
 let LEFT, RIGHT, UP, DOWN;
 let friction = 0.1;
@@ -52,19 +52,18 @@ class Vector {
 
 class Ball {
     constructor(x, y, r, color) {
-        this.x = x;
-        this.y = y;
+        this.x = new Vector(x, y);
         this.r = r;
         this.color = color;
         this.vel = new Vector(0,0);
         this.acc = new Vector(0,0);
         this.acceleration = 1;
         this.player = false;
-        BALLS.push(this);
+        BALLZ.push(this);
     }
     drawball(){
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.r, 0, 2*Math.PI);
+        ctx.arc(this.pos.x, this.pos.y, this.r, 0, 2*Math.PI);
         ctx.strokeStyle = 'black';
         ctx.stroke();
         ctx.fillStyle = this.color;
@@ -134,23 +133,48 @@ const keyControl = (b) => {
     b.vel = b.vel.add(b.acc);
     b.vel = b.vel.mult(1-friction);
 
-    b.x += b.vel.x;
-    b.y += b.vel.y;
+    b.pos = b.pos.add(b.vel);
+}
+
+const round = (number, precision) => {
+    let factor = 10**precision;
+    return Math.round(number*factor)/factor;
+}
+
+const coll_det_bb = (b1, b2) => {
+    if(b1.r + b2.r >= b2/pos.subtr(b1.pos).mag()) {
+        return true;
+    }else false;
+}
+
+const pen_res_bb = (b1, b2) => {
+    let dist = b1.pos.subtr(b2.pos);
+    let pen_depth = b1.r + b2.r - dist.mag();
+    let pen_res = dist.unit().mult(pen_depth);
+    b1.pos = b1.pos.add(pen_res);
+    b2.pos = b2.pos.add(pen_res.mult(-1));
 }
 
 const mainLoop = () => {
     ctx.clearRect(0,0, canvas.clientWidth, canvas.clientHeight);
-    BALLS.forEach((b) => {
+    BALLZ.forEach((b, index) => {
         b.drawball();
         if(b.player) {
             keyControl(b);
         }
+        for(let i=index+1;i<BALLZ.length; i++) {
+            if(coll_det_bb(BALLZ[index], BALLZ[i])) {
+                pen_res_bb(BALLZ[index], BALLZ[i]);
+            }
+        }
         b.display();
-    })
+    });
+
     requestAnimationFrame(mainLoop);
 }
 
 let Ball1 = new Ball(200,200,30,"red");
+let Ball2 = new Ball(300, 250, 40, "blue");
 Ball1.player = true;
 
 requestAnimationFrame(mainLoop);
